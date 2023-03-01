@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use App\Models\Technology;
 use App\Models\Type;
 use GuzzleHttp\Handler\Proxy;
 use Illuminate\Http\Request;
@@ -24,6 +25,7 @@ class ProjectController extends Controller
     protected function getValidatedData(Request $request){
         $validation = [
             'type_id' => "required|exists:types,id",
+            'technologies' => "array|exists:technologies,id",
             'title' => "required|max:50",
             'image' => "image",
             'content' => 'required',
@@ -83,7 +85,8 @@ class ProjectController extends Controller
     {
         $project = new Project();
         $types = Type::all();
-        return view('admin.projects.create', compact('project', 'types'));
+        $technologies = Technology::all();
+        return view('admin.projects.create', compact('project', 'types', 'technologies'));
     }
 
     /**
@@ -102,6 +105,7 @@ class ProjectController extends Controller
         $project = new Project();
         $project->fill($data);
         $project->save();
+        $project->technologies()->sync($data['technologies']);
         return redirect()->route('admin.projects.show', $project);
     }
 
@@ -125,7 +129,8 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         $types = Type::all();
-        return view('admin.projects.edit', compact('project', 'types'));
+        $technologies = Technology::all();
+        return view('admin.projects.edit', compact('project', 'types', 'technologies'));
     }
 
     /**
