@@ -49,4 +49,11 @@ class Project extends Model
     public function type():BelongsTo{
         return $this->belongsTo(Type::class);
     }
+
+    /**
+     * get the user data related to the project
+     */
+    public function technologies(){
+        return $this->belongsToMany(Technology::class);
+    }
 }
