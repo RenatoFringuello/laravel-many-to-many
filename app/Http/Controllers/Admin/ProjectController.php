@@ -105,7 +105,7 @@ class ProjectController extends Controller
         $project = new Project();
         $project->fill($data);
         $project->save();
-        $project->technologies()->sync($data['technologies']);
+        $project->technologies()->sync($data['technologies'] ?? []);
         return redirect()->route('admin.projects.show', $project);
     }
 
@@ -153,6 +153,7 @@ class ProjectController extends Controller
             Storage::delete('/images/projects', $project->image);
 
         $project->update($data);
+        $project->technologies()->sync($data['technologies'] ?? []);
         return redirect()->route('admin.projects.show', $project);
     }
 
